@@ -1,87 +1,106 @@
 #include <iostream>
 using namespace std;
 
-// Base Class
-class BankAccount {
+class BankAccount
+{
 protected:
     int accountNumber;
     string accountHolderName;
     double balance;
 
 public:
-    BankAccount() {
-        accountNumber = 0;
-        accountHolderName = "";
-        balance = 0;
-    }
+    // BankAccount() {
+    //     accountNumber = 0;
+    //     accountHolderName = "";
+    //     balance = 0;
+    // }
 
-    BankAccount(int accNo, string name, double bal) {
+    BankAccount(int accNo = 0, string name = "", double bal = 0)
+    {
         accountNumber = accNo;
         accountHolderName = name;
         balance = bal;
     }
 
-    void setAccount(int accNo, string name, double bal) {
+    void setAccount(int accNo, string name, double bal)
+    {
         accountNumber = accNo;
         accountHolderName = name;
         balance = bal;
     }
 
-    void deposit(double amount) {
-        balance += amount; // only update
+    void deposit(double amount)
+    {
+        balance += amount;
     }
 
-    bool withdraw(double amount) {
-        if (amount <= balance) {
-            balance -= amount; // update
-            return true;       // success
+    bool withdraw(double amount)
+    {
+        if (amount <= balance)
+        {
+            balance -= amount;
+            return true;
         }
-        return false; // failure
+        return false;
     }
 
-    int getAccNo() { return accountNumber; }
-    double getBalance() { return balance; }
+    int getAccNo() 
+    { 
+        return accountNumber; 
+    }
+    double getBalance() 
+    { 
+        return balance; 
+    }
 
-    virtual void displayAccount() {
+    virtual void displayAccount()
+    {
         cout << "\nAccount No: " << accountNumber;
         cout << "\nHolder Name: " << accountHolderName;
         cout << "\nBalance: " << balance << endl;
     }
 
-    virtual void calculateInterest() {
+    virtual void calculateInterest()
+    {
         cout << "No interest calculation for base account." << endl;
     }
 };
 
-// Derived Class: SavingAccount
-class SavingAccount : public BankAccount {
+class SavingAccount : public BankAccount
+{
     double interestRate;
 
 public:
-    SavingAccount() {}
+    // SavingAccount() {}
     SavingAccount(int accNo, string name, double bal, double rate)
-        : BankAccount(accNo, name, bal), interestRate(rate) {}
+        : BankAccount(accNo, name, bal)//, interestRate(rate) 
+        {
+            this->interestRate=rate;
+        }
 
-    void setSavingAccount(int accNo, string name, double bal, double rate) {
+    void setSavingAccount(int accNo, string name, double bal, double rate)
+    {
         setAccount(accNo, name, bal);
-        interestRate = rate;
+        this->interestRate = rate;
     }
 
-    void calculateInterest() override {
+    void calculateInterest() override
+    {
         double interest = balance * (interestRate / 100);
         cout << "Saving Account Interest: " << interest << endl;
     }
 };
 
-// ------------------- MAIN -------------------
-int main() {
-    BankAccount *accounts[10]; // simple array (max 10 accounts)
+int main()
+{
+    BankAccount *accounts[10];
     int totalAccounts = 0;
     int choice, accNo, duration;
     string name;
     double balance, rate, amount;
 
-    do {
+    do
+    {
         cout << "\n======= BANKING SYSTEM MENU =======";
         cout << "\n1. Create Saving Account";
         cout << "\n2. Deposit Money";
@@ -92,9 +111,11 @@ int main() {
         cout << "\nEnter choice: ";
         cin >> choice;
 
-        switch (choice) {
+        switch (choice)
+        {
         case 1:
-            if (totalAccounts < 10) {
+            if (totalAccounts < 10)
+            {
                 cout << "Enter Account Number: ";
                 cin >> accNo;
                 cout << "Enter Account Holder Name: ";
@@ -107,7 +128,9 @@ int main() {
                 accounts[totalAccounts] = new SavingAccount(accNo, name, balance, rate);
                 totalAccounts++;
                 cout << "Saving Account Created!\n";
-            } else {
+            }
+            else
+            {
                 cout << "Account limit reached!\n";
             }
             break;
@@ -117,11 +140,14 @@ int main() {
             cin >> accNo;
             cout << "Enter Amount to Deposit: ";
             cin >> amount;
-            if (accNo >= 0 && accNo < totalAccounts) {
+            if (accNo >= 0 && accNo < totalAccounts)
+            {
                 accounts[accNo]->deposit(amount);
                 cout << "Deposited successfully. New Balance: "
                      << accounts[accNo]->getBalance() << endl;
-            } else {
+            }
+            else
+            {
                 cout << "Invalid account index!\n";
             }
             break;
@@ -131,25 +157,38 @@ int main() {
             cin >> accNo;
             cout << "Enter Amount to Withdraw: ";
             cin >> amount;
-            if (accNo >= 0 && accNo < totalAccounts) {
+            if (accNo >= 0 && accNo < totalAccounts)
+            {
                 if (accounts[accNo]->withdraw(amount))
                     cout << "Withdrawn successfully. New Balance: "
                          << accounts[accNo]->getBalance() << endl;
                 else
                     cout << "Withdrawal failed! Insufficient balance.\n";
-            } else {
+            }
+            else
+            {
                 cout << "Invalid account index!\n";
             }
             break;
 
-        case 4:
-            cout << "Enter Account Index (0-" << totalAccounts - 1 << "): ";
-            cin >> accNo;
-            if (accNo >= 0 && accNo < totalAccounts)
-                accounts[accNo]->displayAccount();
-            else
-                cout << "Invalid account index!\n";
-            break;
+       case 4:
+    cout << "Enter Account Number: ";
+    cin >> accNo;
+
+    {
+        bool found = false;
+        for (int i = 0; i < totalAccounts; i++) {
+            if (accounts[i]->getAccNo() == accNo) {   
+                accounts[i]->displayAccount();
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            cout << "Account not found!\n";
+        }
+    }
+    break;
 
         case 5:
             cout << "Enter Account Index (0-" << totalAccounts - 1 << "): ";
